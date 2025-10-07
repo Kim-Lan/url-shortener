@@ -1,9 +1,13 @@
 <script setup>
 const props = defineProps({
   fullUrl: String,
-  shortUrl: String,
+  shortLabel: String,
   visits: Number
 });
+
+async function deleteUrl() {
+  
+}
 </script>
 
 <template>
@@ -12,7 +16,7 @@ const props = defineProps({
       <a :href="props.fullUrl">{{ fullUrl }}</a>
     </li>
     <li class="table-cell px-2 py-1 border border-gray-300 underline">
-      <a :href="props.shortUrl">{{ shortUrl }}</a>
+      <a :href="props.shortLabel">{{ shortLabel }}</a>
     </li>
     <li class="table-cell text-center px-2 py-1 border border-gray-300">
       {{ visits }}

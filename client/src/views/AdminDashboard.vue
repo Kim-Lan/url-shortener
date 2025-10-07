@@ -1,11 +1,46 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import UrlRow from '../components/UrlRow.vue'
+import { BASE_API_URL } from '../constants'
 
-const urlArray = [{
-  fullUrl: "https://kim-lan.com",
-  shortUrl: "https://test.com",
-  visits: 1 
-}];
+const urlArray = ref(null);
+const fullUrl = ref('');
+const shortLabel = ref('');
+
+onMounted(() => getUrls());
+
+async function getUrls() {
+  try {
+    const response = await fetch(`${BASE_API_URL}/api/urls`, {
+      method: 'GET'
+    });
+    if (response && response.ok) {
+      const data = await response.json();
+      urlArray.value = data.reverse();
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function shortenUrl(submitEvent) {
+  try {
+    const reqBody = { fullUrl: fullUrl.value };
+    if (shortLabel.value !== '') {
+      reqBody['shortLabel'] = shortLabel.value;
+    }
+    const response = await fetch(`${BASE_API_URL}/api/shorten`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(reqBody),
+    });
+    getUrls();
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <template>
@@ -13,19 +48,27 @@ const urlArray = [{
     <h2 class="font-bold text-xl">
       Admin Dashboard
     </h2>
-    <form class="p-4 flex flex-col items-center justify-center md:flex-row gap-6">
+    <form
+      class="p-4 flex flex-col items-center justify-center md:flex-row gap-6"
+      id="urlForm"
+      @submit.prevent="shortenUrl"
+    >
       <div class="w-full md:w-1/2 flex gap-2 items-center">
         <label class="sr-only">Full URL</label>
         <input type="url"
+          name="fullUrl"
+          v-model="fullUrl"
           class="flex-1 px-2 py-1 border-2 border-gray-500 bg-white drop-shadow-sm drop-shadow-gray-300 rounded"
           placeholder="Full URL"
         />
       </div>
       <div class="w-full md:w-1/3 flex gap-2 items-center">
-        <label class="sr-only">Custom Shortened Label</label>
+        <label class="sr-only">Custom Shortened Label (Optional)</label>
         <input type="text"
+          name="shortLabel"
+          v-model="shortLabel"
           class="flex-1 px-2 py-1 border-2 border-gray-500 bg-white drop-shadow-sm drop-shadow-gray-300 rounded"
-          placeholder="Custom Shortened Label"
+          placeholder="Custom Shortened Label (Optional)"
         />
       </div>
       <button
