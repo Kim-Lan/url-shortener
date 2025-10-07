@@ -2,7 +2,6 @@
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.store.js'
-import { BASE_API_URL } from '../constants.js'
 
 const route = useRoute();
 const router = useRouter();
@@ -18,7 +17,7 @@ const auth = useAuthStore();
 async function login() {
   try {
     isLoading.value = true;
-    const response = await fetch(`${BASE_API_URL}/api/login`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_API_URL}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

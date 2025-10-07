@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import UrlRow from '../components/UrlRow.vue'
 import { useAuthStore } from '../stores/auth.store.js'
-import { BASE_API_URL } from '../constants'
 
 const route = useRoute();
 const router = useRouter();
@@ -19,8 +18,12 @@ onMounted(() => getUrls());
 
 async function getUrls() {
   try {
-    const response = await fetch(`${BASE_API_URL}/api/urls`, {
-      method: 'GET'
+    // @ts-ignore
+    const response = await fetch(`${import.meta.env.VITE_BASE_API_URL}/api/urls`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${auth.accessToken}`,
+      }
     });
     if (response && response.ok) {
       const data = await response.json();
@@ -39,9 +42,10 @@ async function shortenUrl(submitEvent) {
     if (shortLabel.value !== '') {
       reqBody['shortLabel'] = shortLabel.value;
     }
-    const response = await fetch(`${BASE_API_URL}/api/shorten`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_API_URL}/api/shorten`, {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${auth.accessToken}`,
         'Content-Type': 'application/json;charset=utf-8'
       },
       body: JSON.stringify(reqBody),
@@ -109,8 +113,12 @@ function logout() {
       >Shorten</button>
     </form>
 
-    <div v-if="errorMessage">
-      Error: {{ errorMessage }}
+    <div
+      v-if="errorMessage"
+      class="bg-red-400 text-white py-2 px-3 rounded"
+    >
+      <font-awesome-icon :icon="['fas', 'triangle-exclamation']" />
+      {{ errorMessage }}
     </div>
 
     <div class="table border border-collapse border-gray-300">

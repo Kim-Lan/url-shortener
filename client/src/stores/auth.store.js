@@ -19,7 +19,6 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function setAccessToken(newToken) {
-    console.log(`access token ${newToken}`)
     accessToken.value = newToken;
     saveAccessToken();
   }

@@ -9,18 +9,33 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 
+app.set('trust proxy', true);
+
 connectDb();
+
+// CORS
+app.use(cors(corsOptions));
 
 // Middleware for parsing JSON and urlencoded form data
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS
-app.use(cors(corsOptions));
+const path = import.meta.dirname + '/views/';
+app.use(express.static(path));
+
+app.get('/', function (req, res) {
+  res.sendFile(path + 'index.html');
+})
+
+app.options('/admin/:all', cors()) 
+
+app.get('/admin/:all', function (req,res) {
+  res.sendFile(path + 'admin/index.html');
+});
 
 app.use('/api', api);
 
-app.get('/:shortLabel', async (req, res) => {
+app.get('/pp/:shortLabel', async (req, res) => {
   const shortUrl = await ShortUrl.findOne({ shortLabel: req.params.shortLabel });
   if (!shortUrl) res.status(404);
 

@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import { BASE_API_URL } from '../constants.js'
 
 const isLoading = ref(false);
 
@@ -11,7 +10,7 @@ const password = ref('');
 async function register() {
   try {
     isLoading.value = true;
-    await fetch(`${BASE_API_URL}/api/register`, {
+    await fetch(`${import.meta.env.VITE_BASE_API_URL}/api/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
