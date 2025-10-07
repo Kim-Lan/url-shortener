@@ -1,13 +1,14 @@
 import { ShortUrl } from '../models/shortUrl.model.js'
-import { nanoid } from 'nanoid'
+import { customAlphabet, nanoid } from 'nanoid'
 
 async function uniqueNanoId(query) {
-  const nanoId = nanoid(8);
-  const sameNanoId = await ShortUrl.findOne({ shortLabel: nanoId });
-  if (sameNanoId) {
+  const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 8);
+  const label = nanoid();
+  const sameLabel = await ShortUrl.findOne({ shortLabel: label });
+  if (sameLabel) {
     return uniqueNanoId(query);
   }
-  return nanoId;
+  return label;
 }
 
 export const getUrls = async (req, res) => {
