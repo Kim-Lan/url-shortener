@@ -24,12 +24,17 @@ app.get('/api/urls', async (req, res) => {
 
 app.post('/api/shorten', async (req, res) => {
   const { fullUrl, shortLabel } = req.body;
-  const url = await ShortUrl.create({
+  const shortUrl = await ShortUrl.create({
     fullUrl,
     shortLabel
   });
-  res.status(200).json(url);
+  res.status(200).json(shortUrl);
 });
+
+app.delete('/api/delete', async (req, res) => {
+  await ShortUrl.deleteOne({ shortLabel: req.body.shortLabel }).exec();
+  res.sendStatus(200);
+})
 
 app.get('/:shortLabel', async (req, res) => {
   const shortUrl = await ShortUrl.findOne({ shortLabel: req.params.shortLabel });

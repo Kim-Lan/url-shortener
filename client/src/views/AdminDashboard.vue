@@ -36,6 +36,8 @@ async function shortenUrl(submitEvent) {
       },
       body: JSON.stringify(reqBody),
     });
+    fullUrl.value = '';
+    shortLabel.value = '';
     getUrls();
   } catch (error) {
     console.error(error);
@@ -72,7 +74,7 @@ async function shortenUrl(submitEvent) {
         />
       </div>
       <button
-        class="px-2 py-1 bg-blue-500 hover:bg-blue-600 active:bg-blue-800 text-white drop-shadow-sm drop-shadow-gray-500 rounded"
+        class="px-2 py-1 bg-blue-500 hover:bg-blue-600 active:bg-blue-800 text-white drop-shadow-sm drop-shadow-gray-500 rounded cursor-pointer"
       >Shorten</button>
     </form>
 
@@ -82,12 +84,11 @@ async function shortenUrl(submitEvent) {
           <li class="table-cell px-2 py-1 border border-gray-300">Full URL</li>
           <li class="table-cell px-2 py-1 border border-gray-300">Shortened URL</li>
           <li class="table-cell text-center px-2 py-1 border border-gray-300">Visits</li>
-          <li class="table-cell text-center px-2 py-1 border border-gray-300">Edit</li>
           <li class="table-cell text-center px-2 py-1 border border-gray-300">Delete</li>
         </ul>
       </div>
 
-      <url-row v-for="url in urlArray" v-bind="url" />
+      <url-row v-for="url in urlArray" v-bind="url" @deleted="getUrls" />
 
     </div>
   </div>

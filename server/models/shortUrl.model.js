@@ -9,7 +9,8 @@ const shortUrlSchema = new Schema({
   },
   shortLabel: {
     type: String,
-    require: true,
+    required: true,
+    unique: true,
     default: () => nanoid(8),
   },
   visits: {
