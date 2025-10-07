@@ -6,6 +6,7 @@ import { BASE_API_URL } from '../constants'
 const urlArray = ref(null);
 const fullUrl = ref('');
 const shortLabel = ref('');
+const errorMessage = ref('');
 
 onMounted(() => getUrls());
 
@@ -19,12 +20,14 @@ async function getUrls() {
       urlArray.value = data.reverse();
     }
   } catch (error) {
+    errorMessage.value = error;
     console.error(error);
   }
 }
 
 async function shortenUrl(submitEvent) {
   try {
+    errorMessage.value = '';
     const reqBody = { fullUrl: fullUrl.value };
     if (shortLabel.value !== '') {
       reqBody['shortLabel'] = shortLabel.value;
@@ -36,10 +39,16 @@ async function shortenUrl(submitEvent) {
       },
       body: JSON.stringify(reqBody),
     });
-    fullUrl.value = '';
-    shortLabel.value = '';
-    getUrls();
+    if (response && response.ok) {
+      fullUrl.value = '';
+      shortLabel.value = '';
+      getUrls();
+    } else {
+      const data = await response.json()
+      errorMessage.value = data.error;
+    }
   } catch (error) {
+    errorMessage.value = error;
     console.error(error);
   }
 }
@@ -77,6 +86,10 @@ async function shortenUrl(submitEvent) {
         class="px-2 py-1 bg-blue-500 hover:bg-blue-600 active:bg-blue-800 text-white drop-shadow-sm drop-shadow-gray-500 rounded cursor-pointer"
       >Shorten</button>
     </form>
+
+    <div v-if="errorMessage">
+      Error: {{ errorMessage }}
+    </div>
 
     <div class="table border border-collapse border-gray-300">
       <div class="table-header-group">

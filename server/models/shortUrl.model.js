@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import { nanoid } from 'nanoid'
 const { Schema, model } = mongoose;
 
 const shortUrlSchema = new Schema({
@@ -11,12 +10,11 @@ const shortUrlSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-    default: () => nanoid(8),
   },
   visits: {
     type: Number,
     required: true,
-    default: 0
+    default: 0,
   }
 });
 
