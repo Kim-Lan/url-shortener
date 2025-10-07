@@ -31,6 +31,16 @@ app.post('/api/shorten', async (req, res) => {
   res.status(200).json(url);
 });
 
+app.get('/:shortLabel', async (req, res) => {
+  const shortUrl = await ShortUrl.findOne({ shortLabel: req.params.shortLabel });
+  if (!shortUrl) res.status(404);
+
+  shortUrl.visits++;
+  shortUrl.save();
+
+  res.redirect(shortUrl.fullUrl);
+});
+
 app.listen(PORT, () =>
   console.log(`Server listening on port ${PORT}`)
 );
