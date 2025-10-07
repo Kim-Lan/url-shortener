@@ -1,7 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import UrlRow from '../components/UrlRow.vue'
+import { useAuthStore } from '../stores/auth.store.js'
 import { BASE_API_URL } from '../constants'
+
+const route = useRoute();
+const router = useRouter();
+
+const auth = useAuthStore();
 
 const urlArray = ref(null);
 const fullUrl = ref('');
@@ -52,13 +59,28 @@ async function shortenUrl(submitEvent) {
     console.error(error);
   }
 }
+
+function logout() {
+  auth.setUser(null);
+  if (route.meta.requiresAuth) {
+    router.push({ name: 'login' });
+  }
+}
 </script>
 
 <template>
   <div class="flex flex-col mx-4 md:mx-12 lg:mx-20 my-4 gap-4">
-    <h2 class="font-bold text-xl">
-      Admin Dashboard
-    </h2>
+    <div class="flex justify-between">
+      <h2 class="font-bold text-xl">
+        Admin Dashboard
+      </h2>
+      <button class="underline cursor-pointer"
+        @click.prevent="logout"
+      >
+        Logout
+      </button>
+    </div>
+
     <form
       class="p-4 flex flex-col items-center justify-center md:flex-row gap-6"
       id="urlForm"
@@ -69,7 +91,7 @@ async function shortenUrl(submitEvent) {
         <input type="url"
           name="fullUrl"
           v-model="fullUrl"
-          class="flex-1 px-2 py-1 border-2 border-gray-500 bg-white drop-shadow-sm drop-shadow-gray-300 rounded"
+          class="flex-1 px-2 py-1 border-2 border-slate-300 bg-slate-200 drop-shadow-sm drop-shadow-gray-300 rounded"
           placeholder="Full URL"
         />
       </div>
@@ -78,7 +100,7 @@ async function shortenUrl(submitEvent) {
         <input type="text"
           name="shortLabel"
           v-model="shortLabel"
-          class="flex-1 px-2 py-1 border-2 border-gray-500 bg-white drop-shadow-sm drop-shadow-gray-300 rounded"
+          class="flex-1 px-2 py-1 border-2 border-slate-300 bg-slate-200 drop-shadow-sm drop-shadow-gray-300 rounded"
           placeholder="Custom Shortened Label (Optional)"
         />
       </div>
