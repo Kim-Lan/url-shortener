@@ -7,6 +7,10 @@ const app = express();
 
 connectDb();
 
+app.post('/shorten', (req, res) => {
+  
+})
+
 app.listen(PORT, () =>
   console.log(`Server listening on port ${PORT}`)
 );
